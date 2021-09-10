@@ -1,0 +1,23 @@
+extends layout
+
+block contenido
+    .listado-notificaciones
+        .listado-notificaciones-detalle
+            h3 Mis Proyectos
+            ul
+                if listadoProyectos.rows.length
+                    each proyecto in listadoProyectos.rows
+                        li.notificacion(data-proyecto=proyecto.id)
+                            p=proyecto.nombre+" ("+proyecto.avance+"%)"
+                            .acciones
+                                a(href="/proyectos/"+proyecto.url) Ir al Proyecto       
+            ul.pagination
+                each pagina in arrayPaginas
+                    li.pagination
+                        if(pagina==page+1)  
+                            a.active(href='/listado-proyectos/'+(pagina-1))=pagina
+                        else 
+                            a(href='/listado-proyectos/'+(pagina-1))=pagina       
+                else
+                    p No hay proyectos. 
+                //pre=vardump(listadoNotificaciones)

@@ -1,0 +1,29 @@
+extends layout
+
+block contenido
+    .listado-notificaciones
+        .listado-notificaciones-detalle
+            h3 Mis Tareas sin Finalizar
+            ul
+                if listadoTareasSinFinalizar.rows.length
+                    each tarea in listadoTareasSinFinalizar.rows
+                        li.notificacion(data-proyecto=tarea.id)
+                            p
+                                strong=tarea.tarea
+                            
+                            .acciones
+                                if tarea.entrega!= "0000-00-00"
+                                    span="Fecha de entrega: "+tarea.entrega+" "
+                                else 
+                                    span="No tiene fecha de entrega "    
+                                a(href="/proyectos/"+tarea.proyecto.url) Ir al Proyecto       
+            ul.pagination
+                each pagina in arrayPaginas
+                    li.pagination
+                        if(pagina==page+1)  
+                            a.active(href='/listado-tareas-sin-finalizar/'+(pagina-1))=pagina
+                        else 
+                            a(href='/listado-tareas-sin-finalizar/'+(pagina-1))=pagina       
+                else
+                    p No hay tareas sin finalizar. 
+                //pre=vardump(listadoNotificaciones)

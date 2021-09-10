@@ -1,26 +1,36 @@
 doctype html
 html(lang="en")
     head
-        meta(charset="UTF-8")
-        meta(http-equiv="X-UA-Compatible", content="IE=edge")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        link(rel="stylesheet", href="/css/normalize.css")
-        link(rel="stylesheet", href="/css/app.css")
-        title= nombrePagina
+       include partials/header
     body 
         header.barra
-            h1 UpTask - Administrador de Proyectos
-            a(href="#") Cerrar Sesión  
+            h1 UpTask - Administrador de Proyectos #{year}
+            a(href="/cerrar-sesion") Cerrar Sesión  
 
         main.contenedor
             aside.contenedor-proyectos
                 .panel.crear-proyecto
-                    a(href="#" class="boton") Nuevo Proyecto
-                        span + 
+                    a(href="/notificaciones/0" class="boton") Notificaciones
+                       span.notificaciones#spanNotificaciones #{cantNotificacion}
+                .panel.crear-proyecto
+                    a(href="/listado-proyectos/0" class="boton") Mis Proyectos
+                .panel.crear-proyecto
+                    a(href="/listado-tareas-sin-finalizar/0" class="boton") Mis Tareas Pendientes          
+                .panel.crear-proyecto
+                    a(href="/nuevo-proyecto" class="boton") Nuevo Proyecto
                 .panel.lista-proyectos
                     h2 Proyectos
                     ul#proyectos.proyectos
-                        li
-                            a(href="#") Diseño de tienda virtual   
-
+                        if(proyectos.length)
+                            each proyecto in proyectos
+                                li
+                                    if proyecto.avance==100
+                                        a(href=`/proyectos/${proyecto.url}`)=proyecto.nombre
+                                        i(class="fa fa-check circle letra-verde" style={margin: '5px'})
+                                    else 
+                                        a(href=`/proyectos/${proyecto.url}`)=proyecto.nombre
             block contenido    
+
+            //pre=vardump(notificaciones[0])
+    script(src="/dist/bundle.js")
+    script(src="https://kit.fontawesome.com/236390430e.js", crossorigin="anonymous")        

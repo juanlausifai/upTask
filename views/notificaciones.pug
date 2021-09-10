@@ -1,0 +1,27 @@
+extends layout
+
+block contenido
+    .listado-notificaciones
+        .listado-notificaciones-detalle
+            h3 Mis Notificaciones
+            ul
+                if listadoNotificaciones.rows.length
+                    each notificacion in listadoNotificaciones.rows
+                        li.notificacion(data-notificacion=notificacion.id)
+                            p=notificacion.observacion
+                            .acciones
+                                if(notificacion.estado==0)
+                                    i.fa.fa-check
+                                else 
+                                    i.fa.fa-check.letra-verde
+                                a(href="/proyectos/"+notificacion.enlace) Ir al Proyecto       
+            ul.pagination
+                each pagina in arrayPaginas
+                    li.pagination
+                        if(pagina==page+1)  
+                            a.active(href='/notificaciones/'+(pagina-1))=pagina
+                        else 
+                            a(href='/notificaciones/'+(pagina-1))=pagina       
+                else
+                    p No hay notificaciones. 
+                //pre=vardump(listadoNotificaciones)

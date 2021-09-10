@@ -1,0 +1,118 @@
+extends layout
+
+block contenido
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css")
+    .contenido-principal
+        input(type="hidden" value=usuarioId id="identificadorUsuario")
+        h1 #{nombrePagina}-#{proyecto.nombre}
+        input(type="hidden" value=proyecto.id id="idProyecto")
+        form.agregar-tarea(action=`/proyectos/${proyecto.url}` method="POST")
+            .campo
+                label(for="tarea") Tarea:
+                input.nombre-tarea(type="text" name="tarea" placeholder="Nombre de tarea" required)
+            .campo
+                select(class="selectpicker select-form"  data-live-search="true" name="usuario" title="Selecciona responsable" required)
+                    each usuario in usuarios
+                        option(value=usuario.id) #{usuario.email}
+            .campo
+                label(for="tarea") Fecha entrega:
+                input.nombre-tarea(type="date" name="entrega" )                
+            .campo.enviar 
+                input.boton.nueva-tarea(type="submit" value="Agregar")
+        
+        form.editar-tarea(action=`/tareas-editar/${proyecto.url}` method="POST")
+            .campo 
+                input.nombre-tarea(type="hidden" name="id" id="tareaId")
+            .campo
+                label(for="tarea") Tarea:
+                input.nombre-tarea(type="text" name="tarea" placeholder="Nombre de tarea" id="nombreTareaEdit" required)
+            .campo
+                select(class="selectpicker select-form"  data-live-search="true" name="usuario" title="Selecciona responsable" id="selectEditTarea" required)
+                    each usuario in usuarios
+                        option(value=usuario.id) #{usuario.email}
+            .campo
+                label(for="tarea") Fecha entrega:
+                input.nombre-tarea(type="date" name="entrega" id="fechaEditTarea")                
+            .campo.enviar 
+                input.boton.nueva-tarea(type="submit" value="Editar")        
+        
+        .listado
+            .listado-pendientes
+                h6 Tareas en Espera
+                ul
+                    if tareasEspera.length
+                        each tarea in tareasEspera
+                            li.tarea(data-tarea=tarea.id data-usuario=tarea.usuarioId)
+                                p=tarea.tarea
+                                span.nombre-encargado-tarea=tarea.usuario.nombre
+                                if tarea.entrega!= "00-00-0000"
+                                    span.tarea-fecha-vencimiento=tarea.entrega
+                                else 
+                                    span.tarea-fecha-vencimiento="Sin fecha"   
+                                .acciones
+                                    i.fa.fa-comment
+                                    i.fa.fa-arrow-right
+                                    i.fa.fa-trash
+                                    i.fa.fa-edit
+                    else
+                        //p No hay tareas en espera.        
+            .listado-proceso
+                h6 Tareas en Proceso
+                ul
+                    if tareasProceso.length
+                        each tarea in tareasProceso
+                            li.tarea(data-tarea=tarea.id data-usuario=tarea.usuarioId)
+                                p=tarea.tarea
+                                span.nombre-encargado-tarea=tarea.usuario.nombre
+                                if tarea.entrega!= "00-00-0000"
+                                    span.tarea-fecha-vencimiento=tarea.entrega
+                                else 
+                                    span.tarea-fecha-vencimiento="Sin fecha"
+                                .acciones
+                                    i.fa.fa-arrow-left
+                                    i.fa.fa-comment
+                                    if tarea.ejecutando==0 
+                                        i.fa.fa-play
+                                    if tarea.ejecutando==1 
+                                         i.fa.fa-play.letra-verde
+                                    i.fa.fa-arrow-right
+                                    i.fa.fa-trash
+                                    i.fa.fa-edit
+                    else
+                        //p.parrafo-no-proceso No hay tareas en proceso.
+            .listado-finalizado
+                h6 Tareas Finalizadas
+                ul
+                    if tareasFinalizadas.length
+                        each tarea in tareasFinalizadas
+                            li.tarea(data-tarea=tarea.id data-usuario=tarea.usuarioId)
+                                p=tarea.tarea
+                                span.nombre-encargado-tarea=tarea.usuario.nombre
+                                if tarea.entrega!= "00-00-0000"
+                                    span.tarea-fecha-vencimiento=tarea.entrega
+                                else 
+                                    span.tarea-fecha-vencimiento="Sin fecha"
+                                .acciones
+                                    i.fa.fa-arrow-left
+                                    i.fa.fa-comment
+                                    i.fa.fa-check.circle.completo
+                                    i.fa.fa-trash
+                                    i.fa.fa-edit
+                    else
+                        //p.parrafo-no-finalizado No hay tareas finalizadas            .                                
+            //pre=vardump(identificacionUsuario)
+
+        .avance
+            h2 Avance del Proyecto
+            #barra-avance.barra-avance
+                #porcentaje.porcentaje
+
+        .contenedor-acciones
+            a(href=`/proyecto/editar/${proyecto.id}` class="boton") Editar proyecto
+            button#eliminar-proyecto(data-proyecto-url=proyecto.url type="button" class="boton eliminar") Eliminar proyecto
+
+        script(src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous") 
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous")
+        script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous") 
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js")         
